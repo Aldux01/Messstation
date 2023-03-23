@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <gui>
+    <temperaturEnabled>true</temperaturEnabled>
     <ozonEnabled>true</ozonEnabled>
     <feinstaubEnabled>true</feinstaubEnabled>
-    <stickstoffdioxidEnabled>false</stickstoffdioxidEnabled>
     <kohlenmonoxidEnabled>true</kohlenmonoxidEnabled>
-    <temperaturEnabled>true</temperaturEnabled>
+    <stickstoffdioxidEnabled>false</stickstoffdioxidEnabled>
     <schwefeldioxidEnabled>false</schwefeldioxidEnabled>
 </gui>

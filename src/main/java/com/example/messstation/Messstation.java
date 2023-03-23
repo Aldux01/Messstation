@@ -2,7 +2,9 @@ package com.example.messstation;
 
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,10 +27,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 public class Messstation extends Stage {
 
+  private static final String KEY_TEMPERATUR = "temperaturEnabled";
+  private static final String KEY_OZON = "ozonEnabled";
+  private static final String KEY_FEINSTAUB = "feinstaubEnabled";
+  private static final String KEY_KOHLENMONOXID = "kohlenmonoxidEnabled";
+  private static final String KEY_STICKSTOFFOXID = "stickstoffdioxidEnabled";
+  private static final String KEY_SCHWEFELDIOXID = "schwefeldioxidEnabled";
   private static final Color RED = Color.rgb(255, 0, 0);
   private static final Color ORANGE = Color.rgb(255, 104, 0);
   private static final Color YELLOW = Color.rgb(255, 255, 0);
@@ -261,13 +277,65 @@ public class Messstation extends Stage {
 
   private void setBooleans(Path settingsPath) throws IOException {
     final String body = new String(Files.readAllBytes(settingsPath));
-    final JSONObject jsonObject = new JSONObject(body);
-    temperaturEnabled = Boolean.parseBoolean((String) jsonObject.get("temperaturEnabled"));
-    ozonEnabled = Boolean.parseBoolean((String) jsonObject.get("ozonEnabled"));
-    feinstaubEnabled = Boolean.parseBoolean((String) jsonObject.get("feinstaubEnabled"));
-    kohlenmonoxidEnabled = Boolean.parseBoolean((String) jsonObject.get("kohlenmonoxidEnabled"));
-    stickstoffdioxidEnabled = Boolean.parseBoolean(
-      (String) jsonObject.get("stickstoffdioxidEnabled"));
-    schwefeldioxidEnabled = Boolean.parseBoolean((String) jsonObject.get("schwefeldioxidEnabled"));
+    if (isJSONValid(body)) {
+      final JSONObject jsonObject = new JSONObject(body);
+      if (isValid(jsonObject)) {
+        temperaturEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_TEMPERATUR));
+        ozonEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_OZON));
+        feinstaubEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_FEINSTAUB));
+        kohlenmonoxidEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_KOHLENMONOXID));
+        stickstoffdioxidEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_STICKSTOFFOXID));
+        schwefeldioxidEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_SCHWEFELDIOXID));
+      } else {
+        throw new IOException("Keys are missing or are invalid in the configuration file!");
+      }
+    } else {
+      try {
+        final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        final Document doc = dBuilder.parse(
+          new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
+        // TODO add isValid() to test if all needed nodes are present
+//        for (int i = 0; i < doc.getChildNodes().getLength(); i++) {
+        //          doc.getChildNodes().item(i);
+        //          doc.
+        //        }
+        temperaturEnabled = Boolean.parseBoolean(
+          doc.getElementsByTagName(KEY_TEMPERATUR).item(0).getTextContent());
+        ozonEnabled = Boolean.parseBoolean(
+          doc.getElementsByTagName(KEY_OZON).item(0).getTextContent());
+        feinstaubEnabled = Boolean.parseBoolean(
+          doc.getElementsByTagName(KEY_FEINSTAUB).item(0).getTextContent());
+        kohlenmonoxidEnabled = Boolean.parseBoolean(
+          doc.getElementsByTagName(KEY_KOHLENMONOXID).item(0).getTextContent());
+        stickstoffdioxidEnabled = Boolean.parseBoolean(
+          doc.getElementsByTagName(KEY_STICKSTOFFOXID).item(0).getTextContent());
+        schwefeldioxidEnabled = Boolean.parseBoolean(
+          doc.getElementsByTagName(KEY_SCHWEFELDIOXID).item(0).getTextContent());
+      } catch (ParserConfigurationException | IOException e) {
+        throw new RuntimeException(e);
+      } catch (SAXException e) {
+        throw new IOException("File type must be JSON or XML!");
+      }
+    }
+  }
+
+  public boolean isJSONValid(String test) {
+    try {
+      new JSONObject(test);
+    } catch (JSONException ex) {
+      try {
+        new JSONArray(test);
+      } catch (JSONException ex1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean isValid(JSONObject jsonObject) {
+    return jsonObject.has(KEY_TEMPERATUR) && jsonObject.has(KEY_OZON) && jsonObject.has(
+      KEY_FEINSTAUB) && jsonObject.has(KEY_KOHLENMONOXID) && jsonObject.has(
+      KEY_STICKSTOFFOXID) && jsonObject.has(KEY_SCHWEFELDIOXID);
   }
 }
