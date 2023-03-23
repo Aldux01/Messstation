@@ -1,0 +1,10 @@
+{
+
+  "temperaturEnabled": "true",
+  "ozonEnabled": "true",
+  "feinstaubEnabled": "true",
+  "kohlenmonoxidEnabled": "true",
+  "stickstoffdioxidEnabled": "true",
+  "schwefeldioxidEnabled": "true"
+
+}
