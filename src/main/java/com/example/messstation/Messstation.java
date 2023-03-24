@@ -29,15 +29,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class Messstation extends Stage {
@@ -153,22 +150,22 @@ public class Messstation extends Stage {
         final var random = ThreadLocalRandom.current();
 
         if (temperaturEnabled) {
-            setTemperatur(random.nextInt(0, 50 + 1));
+            modifyTemperatur(random.nextInt(0, 50 + 1));
         }
         if (ozonEnabled) {
-            setOzon(random.nextInt(0, 241 + 1));
+            modifyOzon(random.nextInt(0, 241 + 1));
         }
         if (feinstaubEnabled) {
-            setFeinstaub(random.nextInt(0, 100 + 1));
+            modifyFeinstaub(random.nextInt(0, 100 + 1));
         }
         if (kohlenmonoxidEnabled) {
-            setKohlenmonoxid(random.nextDouble(0, 30 + 0.1));
+            modifyKohlenmonoxid(random.nextDouble(0, 30 + 0.1));
         }
         if (stickstoffdioxidEnabled) {
-            setStickstoffdioxid(random.nextInt(0, 500 + 1));
+            modifyStickstoffdioxid(random.nextInt(0, 500 + 1));
         }
         if (schwefeldioxidEnabled) {
-            setSchwefeldioxid(random.nextDouble(0, 3 + 0.1));
+            modifySchwefeldioxid(random.nextDouble(0, 3 + 0.1));
         }
     }
 
@@ -177,22 +174,22 @@ public class Messstation extends Stage {
      */
     private void generateValues() {
         if (temperaturEnabled) {
-            setTemperatur((int) getRandomOffsetValue(temperatur.getValue(), 3, 50));
+            modifyTemperatur((int) getRandomOffsetValue(temperatur.getValue(), 3, 50));
         }
         if (ozonEnabled) {
-            setOzon((int) getRandomOffsetValue(ozon.getValue(), 6, 241));
+            modifyOzon((int) getRandomOffsetValue(ozon.getValue(), 6, 241));
         }
         if (feinstaubEnabled) {
-            setFeinstaub((int) getRandomOffsetValue(feinstaub.getValue(), 3, 100));
+            modifyFeinstaub((int) getRandomOffsetValue(feinstaub.getValue(), 3, 100));
         }
         if (kohlenmonoxidEnabled) {
-            setKohlenmonoxid(getRandomOffsetValue(kohlenmonoxid.getValue(), 1.5, 30));
+            modifyKohlenmonoxid(getRandomOffsetValue(kohlenmonoxid.getValue(), 1.5, 30));
         }
         if (stickstoffdioxidEnabled) {
-            setStickstoffdioxid((int) getRandomOffsetValue(stickstoffdioxid.getValue(), 1, 500));
+            modifyStickstoffdioxid((int) getRandomOffsetValue(stickstoffdioxid.getValue(), 1, 500));
         }
         if (schwefeldioxidEnabled) {
-            setSchwefeldioxid(getRandomOffsetValue(schwefeldioxid.getValue(), 0.3, 3));
+            modifySchwefeldioxid(getRandomOffsetValue(schwefeldioxid.getValue(), 0.3, 3));
         }
     }
 
@@ -207,102 +204,102 @@ public class Messstation extends Stage {
      * The following methods are gauge-specific and are used to set the generated value
      * to each gauge and change its colors based on in which range the value is in.
      */
-    private void setTemperatur(int temperaturValue) {
-        temperatur.setValue(temperaturValue);
-        if (temperaturValue <= 10) {
+    private void modifyTemperatur(int value) {
+        temperatur.setValue(value);
+        if (value <= 10) {
             temperatur.setBarColor(Color.DARKBLUE);
-        } else if (temperaturValue <= 20) {
+        } else if (value <= 20) {
             temperatur.setBarColor(Color.LIGHTBLUE);
-        } else if (temperaturValue <= 25) {
+        } else if (value <= 25) {
             temperatur.setBarColor(Color.TURQUOISE);
-        } else if (temperaturValue <= 35) {
+        } else if (value <= 35) {
             temperatur.setBarColor(Color.YELLOW);
-        } else if (temperaturValue <= 40) {
+        } else if (value <= 40) {
             temperatur.setBarColor(Color.ORANGE);
         } else {
             temperatur.setBarColor(Color.RED);
         }
     }
 
-    private void setOzon(int ozonValue) {
-        ozon.setValue(ozonValue);
-        if (ozonValue <= 32) {
+    private void modifyOzon(int value) {
+        ozon.setValue(value);
+        if (value <= 32) {
             ozon.setBarColor(Color.DARKBLUE);
-        } else if (ozonValue <= 64) {
+        } else if (value <= 64) {
             ozon.setBarColor(Color.LIGHTBLUE);
-        } else if (ozonValue <= 119) {
+        } else if (value <= 119) {
             ozon.setBarColor(Color.TURQUOISE);
-        } else if (ozonValue <= 180) {
+        } else if (value <= 180) {
             ozon.setBarColor(Color.YELLOW);
-        } else if (ozonValue <= 240) {
+        } else if (value <= 240) {
             ozon.setBarColor(Color.ORANGE);
         } else {
             ozon.setBarColor(Color.RED);
         }
     }
 
-    private void setFeinstaub(int feinstaubValue) {
-        feinstaub.setValue(feinstaubValue);
-        if (feinstaubValue <= 9) {
+    private void modifyFeinstaub(int value) {
+        feinstaub.setValue(value);
+        if (value <= 9) {
             feinstaub.setBarColor(Color.DARKBLUE);
-        } else if (feinstaubValue <= 19) {
+        } else if (value <= 19) {
             feinstaub.setBarColor(Color.LIGHTBLUE);
-        } else if (feinstaubValue <= 34) {
+        } else if (value <= 34) {
             feinstaub.setBarColor(Color.TURQUOISE);
-        } else if (feinstaubValue <= 50) {
+        } else if (value <= 50) {
             feinstaub.setBarColor(Color.YELLOW);
-        } else if (feinstaubValue <= 99) {
+        } else if (value <= 99) {
             feinstaub.setBarColor(Color.ORANGE);
         } else {
             feinstaub.setBarColor(Color.RED);
         }
     }
 
-    private void setKohlenmonoxid(double kohlenmonoxidValue) {
-        kohlenmonoxid.setValue(kohlenmonoxidValue);
-        if (kohlenmonoxidValue <= 0.9) {
+    private void modifyKohlenmonoxid(double value) {
+        kohlenmonoxid.setValue(value);
+        if (value <= 0.9) {
             kohlenmonoxid.setBarColor(Color.DARKBLUE);
-        } else if (kohlenmonoxidValue <= 1.9) {
+        } else if (value <= 1.9) {
             kohlenmonoxid.setBarColor(Color.LIGHTBLUE);
-        } else if (kohlenmonoxidValue <= 3.9) {
+        } else if (value <= 3.9) {
             kohlenmonoxid.setBarColor(Color.TURQUOISE);
-        } else if (kohlenmonoxidValue <= 10.9) {
+        } else if (value <= 10.9) {
             kohlenmonoxid.setBarColor(Color.YELLOW);
-        } else if (kohlenmonoxidValue <= 29.9) {
+        } else if (value <= 29.9) {
             kohlenmonoxid.setBarColor(Color.ORANGE);
         } else {
             kohlenmonoxid.setBarColor(Color.RED);
         }
     }
 
-    private void setStickstoffdioxid(int stickstoffValue) {
-        stickstoffdioxid.setValue(stickstoffValue);
-        if (stickstoffValue <= 24) {
+    private void modifyStickstoffdioxid(int value) {
+        stickstoffdioxid.setValue(value);
+        if (value <= 24) {
             stickstoffdioxid.setBarColor(Color.DARKBLUE);
-        } else if (stickstoffValue <= 49) {
+        } else if (value <= 49) {
             stickstoffdioxid.setBarColor(Color.LIGHTBLUE);
-        } else if (stickstoffValue <= 99) {
+        } else if (value <= 99) {
             stickstoffdioxid.setBarColor(Color.TURQUOISE);
-        } else if (stickstoffValue <= 200) {
+        } else if (value <= 200) {
             stickstoffdioxid.setBarColor(Color.YELLOW);
-        } else if (stickstoffValue <= 499) {
+        } else if (value <= 499) {
             stickstoffdioxid.setBarColor(Color.ORANGE);
         } else {
             stickstoffdioxid.setBarColor(Color.RED);
         }
     }
 
-    private void setSchwefeldioxid(double schwefeldioxidValue) {
-        schwefeldioxid.setValue(schwefeldioxidValue);
-        if (schwefeldioxidValue <= 0.1) {
+    private void modifySchwefeldioxid(double value) {
+        schwefeldioxid.setValue(value);
+        if (value <= 0.1) {
             schwefeldioxid.setBarColor(Color.DARKBLUE);
-        } else if (schwefeldioxidValue <= 0.2) {
+        } else if (value <= 0.2) {
             schwefeldioxid.setBarColor(Color.LIGHTBLUE);
-        } else if (schwefeldioxidValue <= 0.5) {
+        } else if (value <= 0.5) {
             schwefeldioxid.setBarColor(Color.TURQUOISE);
-        } else if (schwefeldioxidValue <= 1.0) {
+        } else if (value <= 1.0) {
             schwefeldioxid.setBarColor(Color.YELLOW);
-        } else if (schwefeldioxidValue <= 1.3) {
+        } else if (value <= 1.3) {
             schwefeldioxid.setBarColor(Color.ORANGE);
         } else {
             schwefeldioxid.setBarColor(Color.RED);
