@@ -15,7 +15,7 @@ Manuelles Testen:
 - drücke die Knöpfe "Station 2" und "Station 3"
 	- überprüfe, dass die Knöpfe inaktiv sind und nicht mehr klickbar sind
 	- weitere zwei Stationen öffnen sich
-		- wiederholde die Tests aus Station 1
+		- wiederhole die Tests aus Station 1
 		- stelle sicher, dass sich die Werte von den jeweiligen Stationen unterscheide, sowie auch die Farben
 
     - schließe eine Messstation
