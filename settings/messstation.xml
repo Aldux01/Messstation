@@ -4,6 +4,6 @@
     <ozonEnabled>true</ozonEnabled>
     <feinstaubEnabled>true</feinstaubEnabled>
     <kohlenmonoxidEnabled>true</kohlenmonoxidEnabled>
-    <stickstoffdioxidEnabled>false</stickstoffdioxidEnabled>
-    <schwefeldioxidEnabled>false</schwefeldioxidEnabled>
+    <stickstoffdioxidEnabled>true</stickstoffdioxidEnabled>
+    <schwefeldioxidEnabled>true</schwefeldioxidEnabled>
 </gui>
