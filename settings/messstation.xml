@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<gui>
+<messstation>
     <temperaturEnabled>true</temperaturEnabled>
     <ozonEnabled>true</ozonEnabled>
     <feinstaubEnabled>true</feinstaubEnabled>
     <kohlenmonoxidEnabled>true</kohlenmonoxidEnabled>
     <stickstoffdioxidEnabled>true</stickstoffdioxidEnabled>
     <schwefeldioxidEnabled>true</schwefeldioxidEnabled>
-</gui>
+</messstation>
