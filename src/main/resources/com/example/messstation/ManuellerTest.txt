@@ -1,0 +1,25 @@
+Manuelles Testen:
+
+- starte die App
+	- das Hauptfenster öffnet sich
+- drücke den Knopf "Station 1"
+	- überprüfe, dass im Hauptfenster der Knopf "Station 1" inaktiv ist und nicht mehr klickbar ist
+	- erste Messstation öffnet sich
+		- überprüfe, dass der Titel des Fensters Station 1ist
+		- überprüfe, dass sich die Werte alle 5 Sekunden aktualisieren
+		- überprüfe, dass die Werte nicht kleiner als 0 werden
+		- überprüfe, dass die Werte nicht größer als die Obergrenze werden
+		- überprüfe, dass die Farben sich ändern
+		- vergleiche die Werte mit der Tabelle im Arbeitsauftrag und stelle sicher, dass die Farben mit den Grenzen im Arbeitsauftrag übereinstimmen
+
+- drücke die Knöpfe "Station 2" und "Station 3"
+	- überprüfe, dass die Knöpfe inaktiv sind und nicht mehr klickbar sind
+	- weitere zwei Stationen öffnen sich
+		- wiederholde die Tests aus Station 1
+		- stelle sicher, dass sich die Werte von den jeweiligen Stationen unterscheide, sowie auch die Farben
+
+    - schließe eine Messstation
+        - überprüfe, dass sich nur das eine Fenster schließt
+
+- schließe das Hauptfenster
+    - überprüfe, dass sich alle Fenster schlißen (Hauptfenster + Stationen)
