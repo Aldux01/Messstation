@@ -2,8 +2,6 @@ package com.example.messstation;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -11,35 +9,34 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
+// Main extends Application class. It's the main entry point of the application
 public class Main extends Application {
 
-//  private static int count = 1;
-//  private final List<Messstation> messstationen = new ArrayList<>();
+  //  private static int count = 1;
+  //  private final List<Messstation> messstationen = new ArrayList<>();
   private final Messstation station1 = new Messstation(Paths.get("settings/messstation.xml"));
   private final Messstation station2 = new Messstation(Paths.get("settings/messstation2.json"));
   private final Messstation station3 = new Messstation(Paths.get("settings/messstation3.json"));
 
-  public Main() throws IOException, ParserConfigurationException, SAXException {
+  public Main() throws IOException {
   }
+  //  public Main(String... settings) throws IOException, ParserConfigurationException, SAXException {
+  //    for (final String setting : settings) {
+  //      messstationen.add(new Messstation(Paths.get(setting)));
+  //    }
+  //  }
 
-//  public Main(String... settings) throws IOException, ParserConfigurationException, SAXException {
-//    for (final String setting : settings) {
-//      messstationen.add(new Messstation(Paths.get(setting)));
-//    }
-//  }
-
+  // creating the primary stage and adding a button for each of the 3 Messstation instances initialized in the class head.
   @Override
   public void start(Stage stage) {
     final FlowPane root = new FlowPane();
-//    for (Messstation messstation : messstationen) {
-//      final Button buttonStation = new Button();
-//      buttonStation.setText("Station " + count++);
-//      handleButton(stage, buttonStation, messstation);
-//      root.getChildren().add(buttonStation);
-//    }
+    //    for (Messstation messstation : messstationen) {
+    //      final Button buttonStation = new Button();
+    //      buttonStation.setText("Station " + count++);
+    //      handleButton(stage, buttonStation, messstation);
+    //      root.getChildren().add(buttonStation);
+    //    }
     final Button buttonStation1 = new Button();
     buttonStation1.setText("Station 1");
     handleButton(stage, buttonStation1, station1);
@@ -56,6 +53,7 @@ public class Main extends Application {
     final Scene scene = new Scene(root, 450, 250);
     stage.setTitle("Dashboard main menu");
     stage.setScene(scene);
+    // closing the main window closes all other windows and terminates the application
     stage.setOnCloseRequest((event -> {
       event.consume();
       try {
@@ -67,6 +65,10 @@ public class Main extends Application {
     stage.show();
   }
 
+  /* Setting the onClickAction for all buttons initialized in  the start method.
+   * If a button is clicked a new Messstation instance is initialized the button will be set inactive, so you can't restart the instance once it is running.
+   * Closing the window of the Messstation instance will set the button active again.
+   */
   private void handleButton(Stage stage, Button button, Messstation station) {
     button.setOnAction(event -> {
       // New window (Stage)

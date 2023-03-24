@@ -34,7 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public class Messstation extends Stage {
@@ -68,6 +67,10 @@ public class Messstation extends Stage {
   private boolean stickstoffdioxidEnabled;
   private boolean schwefeldioxidEnabled;
 
+  /*
+   * when creating a new Messstation the path of the settings file is
+   * needed to initialize all booleans to display only wanted gauges
+   */
   public Messstation(Path settingsPath) throws IOException {
     this.settings = Objects.requireNonNullElseGet(settingsPath,
       () -> Paths.get("settings/default_settings.json"));
@@ -75,14 +78,24 @@ public class Messstation extends Stage {
     setScene(new Scene(pane));
   }
 
+  /*
+   * Initializes the Messstation-instance:
+   * gauge booleans are set with the values from the settings file,
+   * a new TimeLine object is initialized (our timer to update all gauges after a certain amount of time),
+   * a new FlowPane object is initialized, this is the object where all activated gauges are inserted in,
+   * random value for gauges are generated.
+   */
   private void init() throws IOException {
+    // Boolean variables are initialized with values from the settings file
     setBooleans(settings);
+    // TimeLine is used as a timer. Every 5 seconds the generateValues() method is called and new values are set to the gauges.
     timeline = new Timeline();
     timeline.getKeyFrames()
       .add(new KeyFrame(Duration.seconds(5), (ActionEvent ae) -> generateValues()));
+    // timeline runs till the application is stopped.
     timeline.setCycleCount(Animation.INDEFINITE);
     final GaugeBuilder builder = GaugeBuilder.create().skinType(Gauge.SkinType.DASHBOARD);
-    //
+    // General pane settings
     pane = new FlowPane();
     pane.setAlignment(Pos.CENTER);
     pane.setPadding(new Insets(20));
@@ -91,6 +104,7 @@ public class Messstation extends Stage {
     pane.setPrefWidth(470);
     pane.setBackground(new Background(
       new BackgroundFill(Color.rgb(210, 210, 210), CornerRadii.EMPTY, Insets.EMPTY)));
+    // Initializing all gauges that are set as active in the settings file and adding them into pane.
     if (temperaturEnabled) {
       temperatur = builder.decimals(0).maxValue(50).unit("°C").build();
       final VBox temperaturBox = getTopicBox("Temperatur", GREEN, temperatur);
@@ -121,14 +135,20 @@ public class Messstation extends Stage {
       final VBox schwefeldioxidBox = getTopicBox("Schwefeldioxid (SO²)", ORANGE, schwefeldioxid);
       pane.getChildren().add(schwefeldioxidBox);
     }
-    generateValues();
+    // Initial values for gauges are generated.
+    generateInitialValues();
   }
+
+  /*
+   * This method calls the TimeLine.play() method.
+   * It's Used to start the timer to update the values of the gauges.
+   */
 
   public void play() {
     timeline.play();
   }
 
-  private void generateValues() {
+  private void generateInitialValues() {
     if (temperaturEnabled) {
       int temperaturValue = ThreadLocalRandom.current().nextInt(0, 50 + 1);
       setTemperatur(temperaturValue);
@@ -155,6 +175,76 @@ public class Messstation extends Stage {
     }
   }
 
+  /*
+   * Method to generate random values for all gauges.
+   */
+  private void generateValues() {
+    if (temperaturEnabled) {
+      final int oldValue = (int) temperatur.getValue();
+      //      final int i = (int) (oldValue * 0.01);
+      //      final int newValue = oldValue + ThreadLocalRandom.current().nextInt(-i, i);
+      //      int value = Math.min(newValue, 50 + 1);
+      //      value = Math.max(value, 0);
+      final int temperaturValue = ThreadLocalRandom.current()
+        .nextInt(Math.max(0, oldValue - 3), Math.min(50 + 1, oldValue + 3));
+      setTemperatur(temperaturValue);
+    }
+    if (ozonEnabled) {
+      final int oldValue = (int) ozon.getValue();
+      //      final int i = (int) (oldValue * 0.01);
+      //      final int newValue = oldValue + ThreadLocalRandom.current().nextInt(-i, i);
+      //      int value = Math.min(newValue, 241 + 1);
+      //      value = Math.max(value, 0);
+      final int ozonValue = ThreadLocalRandom.current()
+        .nextInt(Math.max(0, oldValue - 6), Math.min(241 + 1, oldValue + 6));
+      setOzon(ozonValue);
+    }
+    if (feinstaubEnabled) {
+      final int oldValue = (int) feinstaub.getValue();
+      //      final int i = (int) (oldValue * 0.01);
+      //      final int newValue = oldValue + ThreadLocalRandom.current().nextInt(-i, i);
+      //      int value = Math.min(newValue, 100 + 1);
+      //      value = Math.max(value, 0);
+      final int feinstaubValue = ThreadLocalRandom.current()
+        .nextInt(Math.max(0, oldValue - 3), Math.min(100 + 1, oldValue + 3));
+      setFeinstaub(feinstaubValue);
+    }
+    if (kohlenmonoxidEnabled) {
+      final double oldValue = kohlenmonoxid.getValue();
+      //      final double i = oldValue * 0.01;
+      //      final double newValue = oldValue + ThreadLocalRandom.current().nextDouble(-i, i);
+      //      double value = Math.min(newValue, 30 + 0.1);
+      //      value = Math.max(value, 0);
+      final double kohlenmonoxidValue = ThreadLocalRandom.current()
+        .nextDouble(Math.max(0.0, oldValue - 1.5), Math.min(30 + 0.1, oldValue + 1.5));
+      setKohlenmonoxid(kohlenmonoxidValue);
+    }
+    if (stickstoffdioxidEnabled) {
+      final int oldValue = (int) stickstoffdioxid.getValue();
+      //      final int i = (int) (oldValue * 0.01);
+      //      final int newValue = oldValue + ThreadLocalRandom.current().nextInt(-i, i);
+      //      int value = Math.min(newValue, 500 + 1);
+      //      value = Math.max(value, 0);
+      final int stickstoffValue = ThreadLocalRandom.current()
+        .nextInt(Math.max(0, oldValue - 8), Math.min(500 + 1, oldValue + 8));
+      setStickstoffdioxid(stickstoffValue);
+    }
+    if (schwefeldioxidEnabled) {
+      final double oldValue = schwefeldioxid.getValue();
+      //      final double i = oldValue * 0.01;
+      //      final double newValue = oldValue + ThreadLocalRandom.current().nextDouble(-i, i);
+      //      double value = Math.min(newValue, 3.0 + 0.1);
+      //      value = Math.max(value, 0);
+      final double schwefeldioxidValue = ThreadLocalRandom.current()
+        .nextDouble(Math.max(0, oldValue - 0.3), Math.min(3.0 + 0.1, oldValue + 0.3));
+      setSchwefeldioxid(schwefeldioxidValue);
+    }
+  }
+
+  /*
+   * The following methods are gauge-specific and are used to set the generated value
+   * to each gauge and change its colors based on in which range the value is in.
+   */
   private void setTemperatur(int temperaturValue) {
     temperatur.setValue(temperaturValue);
     if (temperaturValue <= 10) {
@@ -257,6 +347,9 @@ public class Messstation extends Stage {
     }
   }
 
+  /*
+   * Creates a VBox for each gauge with a label to know which gauge shows which value.
+   */
   private VBox getTopicBox(final String text, final Color color, final Gauge gauge) {
     final Rectangle bar = new Rectangle(200, 3);
     bar.setArcWidth(6);
@@ -275,10 +368,20 @@ public class Messstation extends Stage {
     return vBox;
   }
 
+  /*
+   * This method sets the boolean values from the settings file into the respective variable.
+   * First it is checked whether the settings file is a JSON or XML file. If it's neither it throws an exception telling the user
+   * that the file must be a JSON or XML format.
+   * If it's a valid JSON it is checked if all needed keys are present in the file and are written correctly, if it's not the case
+   * an exception is thrown to inform the user to correct the settings file.
+   */
   private void setBooleans(Path settingsPath) throws IOException {
+    // reads the content of the settings file and saves it into a string
     final String body = new String(Files.readAllBytes(settingsPath));
+    // checking if string is JSON format
     if (isJSONValid(body)) {
       final JSONObject jsonObject = new JSONObject(body);
+      // checking if JSONObject contain all keys
       if (isValid(jsonObject)) {
         temperaturEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_TEMPERATUR));
         ozonEnabled = Boolean.parseBoolean((String) jsonObject.get(KEY_OZON));
@@ -290,16 +393,14 @@ public class Messstation extends Stage {
         throw new IOException("Keys are missing or are invalid in the configuration file!");
       }
     } else {
+      // If it's not a JSON document maybe it's XML.
       try {
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        // If parsing is successful we have an XML document
         final Document doc = dBuilder.parse(
           new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
         // TODO add isValid() to test if all needed nodes are present
-//        for (int i = 0; i < doc.getChildNodes().getLength(); i++) {
-        //          doc.getChildNodes().item(i);
-        //          doc.
-        //        }
         temperaturEnabled = Boolean.parseBoolean(
           doc.getElementsByTagName(KEY_TEMPERATUR).item(0).getTextContent());
         ozonEnabled = Boolean.parseBoolean(
@@ -315,11 +416,15 @@ public class Messstation extends Stage {
       } catch (ParserConfigurationException | IOException e) {
         throw new RuntimeException(e);
       } catch (SAXException e) {
+        // if parsing is not successful we have neither JSON nor XML files, and we throw an exception.
         throw new IOException("File type must be JSON or XML!");
       }
     }
   }
 
+  /*
+   * Checks if a given String is a valid JSON string.
+   */
   public boolean isJSONValid(String test) {
     try {
       new JSONObject(test);
@@ -333,6 +438,9 @@ public class Messstation extends Stage {
     return true;
   }
 
+  /*
+   * Checks if a given JSONObject contains all needed keys.
+   */
   private boolean isValid(JSONObject jsonObject) {
     return jsonObject.has(KEY_TEMPERATUR) && jsonObject.has(KEY_OZON) && jsonObject.has(
       KEY_FEINSTAUB) && jsonObject.has(KEY_KOHLENMONOXID) && jsonObject.has(
