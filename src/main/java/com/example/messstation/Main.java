@@ -37,20 +37,20 @@ public class Main extends Application {
     //      handleButton(stage, buttonStation, messstation);
     //      root.getChildren().add(buttonStation);
     //    }
-    final Button buttonStation1 = new Button();
+    final var buttonStation1 = new Button();
     buttonStation1.setText("Station 1");
     handleButton(stage, buttonStation1, station1);
-    final Button buttonStation2 = new Button();
+    final var buttonStation2 = new Button();
     buttonStation2.setText("Station 2");
     handleButton(stage, buttonStation2, station2);
-    final Button buttonStation3 = new Button();
+    final var buttonStation3 = new Button();
     buttonStation3.setText("Station 3");
     handleButton(stage, buttonStation3, station3);
     root.getChildren().add(buttonStation1);
     root.getChildren().add(buttonStation2);
     root.getChildren().add(buttonStation3);
     root.setAlignment(Pos.CENTER);
-    final Scene scene = new Scene(root, 450, 250);
+    final var scene = new Scene(root, 450, 250);
     stage.setTitle("Dashboard main menu");
     stage.setScene(scene);
     // closing the main window closes all other windows and terminates the application
